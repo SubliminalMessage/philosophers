@@ -1,0 +1,49 @@
+<string.h>
+	-> void *memset(void *b, int c, size_t len);
+	// Writes len bytes of value c to the string b
+
+<stdio.h>
+	-> int	printf(···);
+	// You know what this does...
+
+<unistd.h>
+	-> int write(···)
+
+	-> int usleep(useconds_t microseconds);
+	// Stops execution for at least, microseconds ms
+
+<stdlib.h>
+	-> void	*malloc(···)
+	-> void	free(···)
+
+<sys/time.h>
+	-> int gettimeofday(struct timeval *tp, void *tzp);
+	// Gets time since X random year in miliseconds. Both values can be NULL without commiting any crime at all (allegedly)
+
+
+<pthread.h>
+	-> int pthread_create(pthread_t *thread, *attr, f(void*), void *arg)
+	// If f() returns, it is as if there was a call to phtrhead_exit
+	// If main() returns, it is as if there was a call to exit()
+
+	-> int pthread_join(pthread_t thread, void **value_ptr)
+	// Works like a wait() for a PID, but instead a PID, it waits for a thread to finish, unless it has already finished.
+
+
+	-> int pthread_detach(pthread_t thread);
+	// Works like a free() for threads. Using it on a non-terminated thread (not finished thread) won't make it terminate, but behaviour is undefined. So better not do it.
+
+	-> pthread_mutex_init(*mutex, *attr)
+	// Creates a new mutex wit attr attributes (or default if NULL).
+	// Stores the id on mutex variable. Return != 0 if error.
+
+	-> pthread_mutext_destroy(*mutex)
+	// It frees() the mutex correctly. Mutex must not be locked.
+
+	-> pthread_mutex_lock(*mutex)
+	// Locks a mutex. If its already locked, the thread will block until the mutext becomes available ??
+
+	-> pthread_mutex_unlock(*mutex)
+	// Unlocks the mutex if the thread did locked it. Otherwise, undefined behaviour.
+
+
