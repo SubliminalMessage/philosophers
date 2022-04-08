@@ -20,7 +20,16 @@ NAME			= philo
 
 SRC_FILES		= main.c
 
-MAND_OBJS = $(SRC_FILES:%.c=bin/%.o)
+UTILS_FILES		= ft_atoi.c \
+				  ft_split.c \
+				  ft_substr.c \
+				  ft_isdigit.c \
+				  ft_memcpy.c \
+				  ft_strlen.c
+
+ALL_FILES = $(SRC_FILES) $(UTILS_FILES)
+
+MAND_OBJS = $(ALL_FILES:%.c=bin/%.o)
 
 ### ---   ---   ---         ---   ---   --- ###
 #              COLORS & EXTRAS :)             #
@@ -50,10 +59,14 @@ bin/%.o: src/%.c
 	@mkdir -p bin
 	$(CC) $(CFLAGS) -I $(INCS_PATH) -c $< -o $@
 
+bin/%.o: src/utils/%.c
+	@echo $(BLUE)"[Compilation]"$(WHITE)": $< "
+	@mkdir -p bin
+	$(CC) $(CFLAGS) -I $(INCS_PATH) -c $< -o $@
+
 clean:
 	@echo $(RED)"[Deleting Object Files]"$(WHITE)
 	@rm -rf bin
-	@echo $(RED)"[Deleting Libft Object Files]"$(WHITE)
 
 fclean: clean 
 	@echo $(RED)"[Deleting $(NAME)]"$(WHITE)
