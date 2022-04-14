@@ -3,7 +3,7 @@
 ### ---   ---   ---         ---   ---   --- ###
 
 CC	= gcc
-CFLAGS	= -Wall -Werror -Wextra #-g3 -fsanitize=address
+CFLAGS	= -Wall -Werror -Wextra -pthread #-g3 -fsanitize=address
 
 ### ---   ---   ---         ---   ---   --- ###
 #               PROJECT PATHS                 #
@@ -20,12 +20,13 @@ NAME			= philo
 
 SRC_FILES		= main.c
 
-UTILS_FILES		= ft_atoi.c \
-				  ft_split.c \
-				  ft_substr.c \
-				  ft_isdigit.c \
-				  ft_memcpy.c \
-				  ft_strlen.c
+UTILS_FILES		= utils/ft_atoi.c \
+				  utils/ft_split.c \
+				  utils/ft_substr.c \
+				  utils/ft_isdigit.c \
+				  utils/ft_memcpy.c \
+				  utils/ft_strlen.c \
+				  utils/ft_strdigit.c
 
 ALL_FILES = $(SRC_FILES) $(UTILS_FILES)
 
@@ -59,9 +60,9 @@ bin/%.o: src/%.c
 	@mkdir -p bin
 	$(CC) $(CFLAGS) -I $(INCS_PATH) -c $< -o $@
 
-bin/%.o: src/utils/%.c
+bin/utils/%.o: src/utils/%.c
 	@echo $(BLUE)"[Compilation]"$(WHITE)": $< "
-	@mkdir -p bin
+	@mkdir -p bin/utils/
 	$(CC) $(CFLAGS) -I $(INCS_PATH) -c $< -o $@
 
 clean:
