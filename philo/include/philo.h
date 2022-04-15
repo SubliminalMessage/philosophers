@@ -9,6 +9,13 @@
 # include <pthread.h>
 # include <stddef.h>
 
+# define DIE_TYPE 1
+# define TAKE_TYPE 2
+# define EAT_TYPE 3
+# define THINK_TYPE 4
+# define SLEEP_TYPE 5
+
+
 // Util Functions
 int		ft_atoi(const char *str);
 char	**ft_split(const char *s, char c);
@@ -25,9 +32,7 @@ typedef struct s_philo {
     int time_die;
     int time_eat;
     int time_sleep;
-    int total_loops;
     int current_loops;
-    int fork_index; // 0 or 1, to then % 2 for sync-ing
     t_mutex *forks[2];
     t_mutex *print_mutex;
     long time_start;
