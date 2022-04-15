@@ -29,7 +29,10 @@ typedef struct s_philo {
     int current_loops;
     int fork_index; // 0 or 1, to then % 2 for sync-ing
     t_mutex *forks[2];
-    t_mutex **print_mutex;
+    t_mutex *print_mutex;
+    long time_start;
+    long last_ate;
+    int     **anyone_dead;
 } t_philo;
 
 typedef struct s_config {
@@ -42,6 +45,23 @@ typedef struct s_config {
     t_philo **philos; // free()
     t_mutex *forks; // free() / destroy/()
     t_mutex *print_mutex; // free() / destroy()
+    int     *anyone_dead;
 } t_config;
+
+
+// philos.c
+void    *run_philo(void *arg);
+t_philo *create_philo(t_config *cfg, int index);
+void	sleep_for(long ms);
+long get_time(long offset);
+int is_anyone_dead(t_philo *philo);
+
+
+// actions.c
+int philo_take_fork(t_philo **philo_ptr, int fork_index);
+int philo_eat(t_philo **philo_ptr);
+int philo_sleep(t_philo **philo_ptr);
+int philo_think(t_philo **philo_ptr);
+void philo_die(t_philo **philo_ptr);
 
 #endif

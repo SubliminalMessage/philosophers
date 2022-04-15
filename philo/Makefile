@@ -18,7 +18,9 @@ SRCS_PATH			= src/
 
 NAME			= philo
 
-SRC_FILES		= main.c
+SRC_FILES		= main.c \
+				  philos.c \
+				  actions.c
 
 UTILS_FILES		= utils/ft_atoi.c \
 				  utils/ft_split.c \

@@ -47,69 +47,27 @@ t_config    *parse_configuration(int argc, char **argv)
         i++;
     }
 
+    cfg->print_mutex = malloc(sizeof(t_mutex));
+    pthread_mutex_init(cfg->print_mutex, NULL);
+
+    cfg->anyone_dead = malloc(sizeof(int)); 
+    *cfg->anyone_dead = 0;
+
     /* Print result */
-    printf("Config args:\n");
+    /*printf("Config args:\n");
     printf("Nº Philos:    \t%d\n", cfg->n_philo);
     printf("Time to die:  \t%dms\n", cfg->time_die);
     printf("Time to eat:  \t%dms\n", cfg->time_eat);
     printf("Time to sleep:\t%dms\n", cfg->time_sleep);
-    printf("Total loops:  \t%d\n", cfg->total_loops);
+    printf("Total loops:  \t%d\n", cfg->total_loops);*/
 
     return (cfg);
-}
-
-void    *run_philo(void *arg)
-{
-    t_philo *philo = (t_philo *) arg;
-    
-    printf("Nº %d running\n", philo->index);
-
-    while(1)
-    {
-        printf("Nº %d trying to grab [0]\n", philo->index);
-        pthread_mutex_lock(philo->forks[0]);
-        printf("Nº %d -> Locked [0]!\n", philo->index);
-        printf("Nº %d trying to grab [1]\n", philo->index);
-        pthread_mutex_lock(philo->forks[1]);
-        printf("Nº %d -> Locked [1]!\n", philo->index);
-        printf("Nº %d -> Waiting 1000ms...\n", philo->index);
-        usleep(100);
-        printf("Nº %d -> Dropping both forks...\n", philo->index);
-        pthread_mutex_unlock(philo->forks[0]);
-        pthread_mutex_unlock(philo->forks[1]);
-
-        printf("Nº %d -> Dropped!! Restarting in 1000ms\n", philo->index);
-        usleep(100);
-    }
-
-    return (NULL);
 }
 
 /*
 number_of_philosophers time_to_die
 time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
 */
-
-t_philo *create_philo(t_config *cfg, int index)
-{
-    t_philo *philo;
-
-    philo = malloc(sizeof(t_philo));
-    philo->index = index;
-    philo->time_die = cfg->time_die;
-    philo->time_eat = cfg->time_eat;
-    philo->time_sleep = cfg->time_sleep;
-    philo->total_loops = cfg->total_loops;
-    philo->current_loops = 0;
-    philo->fork_index = 0; // <??
-    philo->forks[1] = &cfg->forks[index - 1];
-    if (index == 1)
-        philo->forks[0] = &cfg->forks[cfg->n_philo - 1];
-    else
-        philo->forks[0] = &cfg->forks[index % cfg->n_philo];
-
-    return(philo);
-}
 
 int main(int argc, char **argv)
 {
@@ -121,9 +79,11 @@ int main(int argc, char **argv)
     config = parse_configuration(argc, argv);
 
     i = 0;
+    long timestamp = get_time(0);
     while (i < config->n_philo)
     {
         config->philos[i] = create_philo(config, i + 1);
+        config->philos[i]->time_start = timestamp;
         pthread_create(&config->threads[i], NULL, run_philo, config->philos[i]);
         i++;
     }
