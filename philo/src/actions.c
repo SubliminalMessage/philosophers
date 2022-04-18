@@ -38,9 +38,9 @@ int philo_eat(t_philo **philo_ptr)
     printf("\033[0;32m[\033[0;0m%ld\033[0;32m] ", timestamp);
     printf("Philosopher %d is eating\033[0;0m\n", philo->index);
     philo->last_ate = timestamp + philo->time_start;
-    philo->current_loops++;
     pthread_mutex_unlock(philo->print_mutex);
     sleep_for(philo->time_eat);
+    philo->current_loops++;
     pthread_mutex_unlock(philo->forks[0]);
     pthread_mutex_unlock(philo->forks[1]);
     return (0);
@@ -92,33 +92,19 @@ void philo_die(t_philo **philo_ptr)
 
     philo = *philo_ptr;
     //printf("Trying to lock print mutex\n");
-    //pthread_mutex_lock(philo->print_mutex); // Already locked before calling this function
     //printf("Locked\n");
+    //pthread_mutex_lock(philo->print_mutex); // Already locked before calling this function
     *(*(philo->anyone_dead)) = 1;
     timestamp = get_time(philo->time_start);
 
     printf("\033[0;31m[\033[0;0m%ld\033[0;31m] ", timestamp);
     printf("Philosopher %d died\033[0;0m\n", philo->index);
+
+    if (philo->index == 1 && philo->forks[0] == philo->forks[1])
+    {
+        pthread_mutex_unlock(philo->forks[1]);
+    }
+
     //pthread_mutex_unlock(philo->print_mutex);
     //printf("Unlocked\n");
 }
-/*
-char *get_message(t_philo *philo, int type)
-{
-    int index;
-    long timestamp;
-    char *start;
-
-    index = philo->index;
-    //timestamp = get_time(philo->time_start);
-    if (type == DIE_TYPE)
-        printf("[%ld] Philo %d died", timestamp, index);
-    if (type == TAKE_TYPE)
-        printf("[%ld] Philo %d has taken a fork", timestamp, index);
-    if (type == EAT_TIME)
-        printf("[%ld] Philo %d is eating", timestamp, index);
-    if (type == THINK_TYPE)
-    printf("[%ld] Philo %d is thinking", timestamp, index);
-    if (type == SLEEP_TYPE)
-    printf("[%ld] Philo %d is sleeping", timestamp, index);
-}*/

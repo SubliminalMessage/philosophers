@@ -3,7 +3,7 @@
 ### ---   ---   ---         ---   ---   --- ###
 
 CC	= gcc
-CFLAGS	= -Wall -Werror -Wextra -pthread #-g3 -fsanitize=address
+CFLAGS	= -Wall -Werror -Wextra -pthread #-g3 -fsanitize=thread
 
 ### ---   ---   ---         ---   ---   --- ###
 #               PROJECT PATHS                 #
@@ -20,7 +20,8 @@ NAME			= philo
 
 SRC_FILES		= main.c \
 				  philos.c \
-				  actions.c
+				  actions.c \
+				  parse.c
 
 UTILS_FILES		= utils/ft_atoi.c \
 				  utils/ft_split.c \
@@ -59,12 +60,7 @@ $(NAME): $(MAND_OBJS)
 
 bin/%.o: src/%.c
 	@echo $(BLUE)"[Compilation]"$(WHITE)": $< "
-	@mkdir -p bin
-	$(CC) $(CFLAGS) -I $(INCS_PATH) -c $< -o $@
-
-bin/utils/%.o: src/utils/%.c
-	@echo $(BLUE)"[Compilation]"$(WHITE)": $< "
-	@mkdir -p bin/utils/
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I $(INCS_PATH) -c $< -o $@
 
 clean:

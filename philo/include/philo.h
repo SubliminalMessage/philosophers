@@ -69,4 +69,11 @@ int philo_sleep(t_philo **philo_ptr);
 int philo_think(t_philo **philo_ptr);
 void philo_die(t_philo **philo_ptr);
 
+// parse.c
+t_config    *parse_configuration(int argc, char **argv);
+void	parse_args(int argc, char **argv, t_config **config);
+
+// Others
+void    clean_exit(char *msg, t_config *config);
+
 #endif
