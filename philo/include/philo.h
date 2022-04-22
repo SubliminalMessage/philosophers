@@ -38,6 +38,9 @@ typedef struct s_philo {
     long time_start;
     long last_ate;
     int     **anyone_dead;
+    t_mutex *anyone_mutex;
+    t_mutex *loops_mutex;
+    t_mutex *ate_mutex;
 } t_philo;
 
 typedef struct s_config {
@@ -50,6 +53,7 @@ typedef struct s_config {
     t_philo **philos; // free()
     t_mutex *forks; // free() / destroy/()
     t_mutex *print_mutex; // free() / destroy()
+    t_mutex *anyone_mutex;
     int     *anyone_dead;
 } t_config;
 
@@ -71,9 +75,20 @@ void philo_die(t_philo **philo_ptr);
 
 // parse.c
 t_config    *parse_configuration(int argc, char **argv);
-void	parse_args(int argc, char **argv, t_config **config);
+int	parse_args(int argc, char **argv, t_config **config);
 
 // Others
-void    clean_exit(char *msg, t_config *config);
+void    clean_exit(t_config *config);
 
+// time.c
+long get_time(long offset);
+void	sleep_for(long ms);
+
+// safe_mutex.c
+int read_anyone_dead(t_philo **philo_ptr);
+void set_anyone_dead(t_philo **philo_ptr, int value);
+int read_total_loops(t_philo **philo_ptr);
+void add_total_loops(t_philo **philo_ptr);
+long read_last_ate(t_philo **philo_ptr);
+void set_last_ate(t_philo **philo_ptr, long value);
 #endif

@@ -3,7 +3,7 @@
 ### ---   ---   ---         ---   ---   --- ###
 
 CC	= gcc
-CFLAGS	= -Wall -Werror -Wextra -pthread #-g3 -fsanitize=thread
+CFLAGS	= -Wall -Werror -Wextra -pthread #-g3 -fsanitize=thread #-fsanitize=address
 
 ### ---   ---   ---         ---   ---   --- ###
 #               PROJECT PATHS                 #
@@ -21,13 +21,13 @@ NAME			= philo
 SRC_FILES		= main.c \
 				  philos.c \
 				  actions.c \
-				  parse.c
+				  parse.c \
+				  time.c \
+				  safe_mutex.c \
+				  safe_mutex2.c
 
 UTILS_FILES		= utils/ft_atoi.c \
-				  utils/ft_split.c \
-				  utils/ft_substr.c \
 				  utils/ft_isdigit.c \
-				  utils/ft_memcpy.c \
 				  utils/ft_strlen.c \
 				  utils/ft_strdigit.c
 

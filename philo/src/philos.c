@@ -17,24 +17,16 @@ t_philo *create_philo(t_config *cfg, int index)
     philo->print_mutex = cfg->print_mutex;
     philo->anyone_dead = &cfg->anyone_dead;
 
+    philo->anyone_mutex = cfg->anyone_mutex;
+    philo->loops_mutex = malloc(sizeof(t_mutex));
+    //printf("Philo loop_mutex: %p\n", philo->loops_mutex);
+    pthread_mutex_init(philo->loops_mutex, NULL);
+    philo->ate_mutex = malloc(sizeof(t_mutex));
+    //printf("Philo ate_mutex: %p\n", philo->ate_mutex);
+
+    pthread_mutex_init(philo->ate_mutex, NULL);
+
     return(philo);
-}
-
-long get_time(long offset)
-{
-    struct timeval  current;
-    
-    gettimeofday(&current, NULL);
-    return ((current.tv_sec * 1000 + current.tv_usec / 1000) - offset);
-}
-
-void	sleep_for(long ms)
-{
-	long	start;
-
-	start = get_time(0);
-	while (get_time(start) < ms)
-	;
 }
 
 void    *run_philo(void *arg)
@@ -44,16 +36,10 @@ void    *run_philo(void *arg)
     
     philo = (t_philo *) arg;
     index = philo->index;
-    //printf("Nº %d running\n", index);
-    //philo->time_start = get_time(0);
-    philo->last_ate = get_time(0);
-
-    //printf("Start: %ld\n", philo->time_start);
-
+    //philo->last_ate = get_time(0);
+    set_last_ate(&philo, get_time(0));
     while(1)
     {
-        /*if (is_anyone_dead(philo))
-            break ;*/
         if (philo_take_fork(&philo, index % 2))
             break ;
         if (philo_take_fork(&philo, (index + 1) % 2))

@@ -9,7 +9,7 @@ int philo_take_fork(t_philo **philo_ptr, int fork_index)
 
     pthread_mutex_lock(philo->forks[fork_index]);
     pthread_mutex_lock(philo->print_mutex);
-    if (**philo->anyone_dead == 1)
+    if (read_anyone_dead(&philo) == 1)
     {
         pthread_mutex_unlock(philo->print_mutex);
         pthread_mutex_unlock(philo->forks[fork_index]);
@@ -29,7 +29,7 @@ int philo_eat(t_philo **philo_ptr)
 
     philo = *philo_ptr;
     pthread_mutex_lock(philo->print_mutex);
-    if (**philo->anyone_dead == 1)
+    if (read_anyone_dead(&philo) == 1)
     {
         pthread_mutex_unlock(philo->print_mutex);
         return (1);
@@ -37,10 +37,10 @@ int philo_eat(t_philo **philo_ptr)
     timestamp = get_time(philo->time_start);
     printf("\033[0;32m[\033[0;0m%ld\033[0;32m] ", timestamp);
     printf("Philosopher %d is eating\033[0;0m\n", philo->index);
-    philo->last_ate = timestamp + philo->time_start;
     pthread_mutex_unlock(philo->print_mutex);
+    set_last_ate(&philo, timestamp + philo->time_start);
     sleep_for(philo->time_eat);
-    philo->current_loops++;
+    add_total_loops(&philo);
     pthread_mutex_unlock(philo->forks[0]);
     pthread_mutex_unlock(philo->forks[1]);
     return (0);
@@ -53,7 +53,7 @@ int philo_sleep(t_philo **philo_ptr)
 
     philo = *philo_ptr;
     pthread_mutex_lock(philo->print_mutex);
-    if (**philo->anyone_dead == 1)
+    if (read_anyone_dead(&philo) == 1)
     {
         pthread_mutex_unlock(philo->print_mutex);
         return (1);
@@ -73,7 +73,7 @@ int philo_think(t_philo **philo_ptr)
 
     philo = *philo_ptr;
     pthread_mutex_lock(philo->print_mutex);
-    if (**philo->anyone_dead == 1)
+    if (read_anyone_dead(&philo) == 1)
     {
         pthread_mutex_unlock(philo->print_mutex);
         return (1);
@@ -93,8 +93,8 @@ void philo_die(t_philo **philo_ptr)
     philo = *philo_ptr;
     //printf("Trying to lock print mutex\n");
     //printf("Locked\n");
-    //pthread_mutex_lock(philo->print_mutex); // Already locked before calling this function
-    *(*(philo->anyone_dead)) = 1;
+    pthread_mutex_lock(philo->print_mutex); // Already locked before calling this function
+    set_anyone_dead(&philo, 1);
     timestamp = get_time(philo->time_start);
 
     printf("\033[0;31m[\033[0;0m%ld\033[0;31m] ", timestamp);
@@ -105,6 +105,6 @@ void philo_die(t_philo **philo_ptr)
         pthread_mutex_unlock(philo->forks[1]);
     }
 
-    //pthread_mutex_unlock(philo->print_mutex);
+    pthread_mutex_unlock(philo->print_mutex);
     //printf("Unlocked\n");
 }

@@ -6,11 +6,17 @@
 /*   By: dangonza <dangonza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 15:26:29 by dangonza          #+#    #+#             */
-/*   Updated: 2022/04/18 16:02:15 by dangonza         ###   ########.fr       */
+/*   Updated: 2022/04/22 15:36:34 by dangonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
+
+t_config    *parse_error(char *str, t_config *config)
+{
+    printf("%s\n", str);
+    return (config);
+}
 
 t_config    *parse_configuration(int argc, char **argv)
 {
@@ -19,28 +25,42 @@ t_config    *parse_configuration(int argc, char **argv)
 
 	if (!ft_strdigit(argv[1]) || !ft_strdigit(argv[2]) 
 		|| !ft_strdigit(argv[3]) || !ft_strdigit(argv[4]))
-			clean_exit("Arguments can only be numbers", NULL);
+			return (parse_error("Arguments can only be numbers", NULL));
     cfg = malloc(sizeof(t_config));
-	parse_args(argc, argv, &cfg);
+    //printf("config: %p\n", cfg);
+	i = parse_args(argc, argv, &cfg);
+    if (i == -1)
+    {
+        free(cfg);
+        return (NULL);
+    }
     cfg->threads = malloc(sizeof(pthread_t) * cfg->n_philo);
     cfg->philos = malloc(sizeof(t_philo *) * cfg->n_philo);
     cfg->forks = malloc(sizeof(t_mutex) * cfg->n_philo);
+
+    /*printf("Threads: %p\n", cfg->threads);
+    printf("Philos: %p\n", cfg->philos);
+    printf("Forks: %p\n", cfg->forks);*/
+
     if (cfg->threads == NULL || cfg->philos == NULL || cfg->forks == NULL)
-        clean_exit("Malloc failed :(", cfg);
-    i = 0;
-    while (i < cfg->n_philo)
-    {
+        return (parse_error("Malloc failed :(", cfg));
+    i = -1;
+    while (++i < cfg->n_philo)
         pthread_mutex_init(&cfg->forks[i], NULL);
-        i++;
-    }
     cfg->print_mutex = malloc(sizeof(t_mutex));
     pthread_mutex_init(cfg->print_mutex, NULL);
+    //printf("Print mutex: %p\n", cfg->print_mutex);
     cfg->anyone_dead = malloc(sizeof(int)); 
+    //printf("Anyone dead %p\n", cfg->anyone_dead);
+
     *cfg->anyone_dead = 0;
+    cfg->anyone_mutex = malloc(sizeof(t_mutex));
+    //printf("Anyone mutex %p\n", cfg->anyone_mutex);
+    pthread_mutex_init(cfg->anyone_mutex, NULL);
     return (cfg);
 }
 
-void	parse_args(int argc, char **argv, t_config **config)
+int	parse_args(int argc, char **argv, t_config **config)
 {
 	t_config *cfg;
 
@@ -52,11 +72,18 @@ void	parse_args(int argc, char **argv, t_config **config)
     if (argc == 6)
     {
         if (!ft_strdigit(argv[5]))
-            clean_exit("Arguments can only be numbers", cfg);
+        {
+            printf("Arguments can only be numbers\n");
+            return (-1);
+        }
         cfg->total_loops = ft_atoi(argv[5]);
     }
     else
         cfg->total_loops = -1;
     if (cfg->n_philo <= 0)
-        clean_exit("There should be at least 1 Philosopher", cfg);
+    {
+        printf("There should be at least 1 Philosopher\n");
+        return (-1);
+    }
+    return (0);
 }
