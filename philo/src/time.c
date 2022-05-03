@@ -6,18 +6,18 @@
 /*   By: dangonza <dangonza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/19 15:35:33 by dangonza          #+#    #+#             */
-/*   Updated: 2022/04/19 15:40:52 by dangonza         ###   ########.fr       */
+/*   Updated: 2022/05/03 18:36:01 by dangonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-long get_time(long offset)
+long	get_time(long offset)
 {
-    struct timeval  current;
-    
-    gettimeofday(&current, NULL);
-    return ((current.tv_sec * 1000 + current.tv_usec / 1000) - offset);
+	struct timeval	current;
+
+	gettimeofday(&current, NULL);
+	return ((current.tv_sec * 1000 + current.tv_usec / 1000) - offset);
 }
 
 void	sleep_for(long ms)
