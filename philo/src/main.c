@@ -6,7 +6,7 @@
 /*   By: dangonza <dangonza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 18:27:12 by dangonza          #+#    #+#             */
-/*   Updated: 2022/05/03 18:44:00 by dangonza         ###   ########.fr       */
+/*   Updated: 2022/05/10 13:57:51 by dangonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,50 +31,20 @@ void	clean_exit(t_config *config)
 			pthread_detach(config->threads[i]);
 			i++;
 		}
-		free(config->threads);
-		free(config->philos);
-		free(config->forks);
-		pthread_mutex_destroy(config->print_mutex);
-		free(config->print_mutex);
-		free(config->anyone_dead);
-		free(config->anyone_mutex);
-		free(config);
+		free_stuff(config);
 	}
 }
 
-void	check_threads(t_config *config)
+void	free_stuff(t_config *config)
 {
-	t_philo	*philo;
-	int		any_dead;
-	int		count;
-	int		i;
-	long	now;
-
-	any_dead = 0;
-	count = 0;
-	while (!any_dead && (config->total_loops == -1 || count < config->n_philo))
-	{
-		i = 0;
-		count = 0;
-		while (i < config->n_philo)
-		{
-			philo = config->philos[i];
-			if (read_last_ate(&philo) == 0)
-				continue ;
-			now = get_time(0);
-			if (read_last_ate(&philo) + philo->time_die <= now)
-			{
-				any_dead = 1;
-				set_anyone_dead(&philo, 1);
-				philo_die(&philo);
-				break ;
-			}
-			if (read_total_loops(&philo) >= config->total_loops)
-				count++;
-			i++;
-		}
-	}
-	set_anyone_dead(&config->philos[0], 1);
+	free(config->threads);
+	free(config->philos);
+	free(config->forks);
+	pthread_mutex_destroy(config->print_mutex);
+	free(config->print_mutex);
+	free(config->anyone_dead);
+	free(config->anyone_mutex);
+	free(config);
 }
 
 int	main(int argc, char **argv)
@@ -85,7 +55,7 @@ int	main(int argc, char **argv)
 
 	config = NULL;
 	if (argc != 5 && argc != 6)
-		printf("Not enough arguments or too many of them!");
+		printf("Not enough arguments or too many of them!\n");
 	else
 	{
 		config = parse_configuration(argc, argv);
@@ -95,15 +65,23 @@ int	main(int argc, char **argv)
 			timestamp = get_time(0);
 			while (++i < config->n_philo)
 			{
-				config->philos[i] = create_philo(config, i + 1);
-				config->philos[i]->time_start = timestamp;
-				pthread_create(&config->threads[i], NULL, run_philo, config->philos[i]);
+				config->philos[i] = create_philo(config, i + 1, timestamp);
+				pthread_create(&config->threads[i], NULL,
+					run_philo, config->philos[i]);
 			}
-			check_threads(config);
-			i = -1;
-			while (++i < config->n_philo)
-				pthread_join(config->threads[i], NULL);
+			check_threads(&config);
+			wait_philos(&config);
 		}
 	}
 	clean_exit(config);
+}
+
+void	wait_philos(t_config **config)
+{
+	int	i;
+
+	i = -1;
+	
+	while (++i < (*config)->n_philo)
+		pthread_join((*config)->threads[i], NULL);
 }

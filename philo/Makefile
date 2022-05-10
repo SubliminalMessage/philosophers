@@ -24,7 +24,8 @@ SRC_FILES		= main.c \
 				  parse.c \
 				  time.c \
 				  safe_mutex.c \
-				  safe_mutex2.c
+				  safe_mutex2.c \
+				  threads.c
 
 UTILS_FILES		= utils/ft_atoi.c \
 				  utils/ft_isdigit.c \

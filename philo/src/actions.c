@@ -6,7 +6,7 @@
 /*   By: dangonza <dangonza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 18:27:04 by dangonza          #+#    #+#             */
-/*   Updated: 2022/05/03 18:34:13 by dangonza         ###   ########.fr       */
+/*   Updated: 2022/05/10 13:33:30 by dangonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	philo_sleep(t_philo **philo_ptr)
 	return (0);
 }
 
-int philo_think(t_philo **philo_ptr)
+int	philo_think(t_philo **philo_ptr)
 {
 	long	timestamp;
 	t_philo	*philo;

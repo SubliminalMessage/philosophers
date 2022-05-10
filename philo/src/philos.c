@@ -6,13 +6,13 @@
 /*   By: dangonza <dangonza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 18:27:17 by dangonza          #+#    #+#             */
-/*   Updated: 2022/05/03 18:41:19 by dangonza         ###   ########.fr       */
+/*   Updated: 2022/05/09 15:51:52 by dangonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-t_philo	*create_philo(t_config *cfg, int index)
+t_philo	*create_philo(t_config *cfg, int index, long timestamp)
 {
 	t_philo	*philo;
 
@@ -31,6 +31,7 @@ t_philo	*create_philo(t_config *cfg, int index)
 	pthread_mutex_init(philo->loops_mutex, NULL);
 	philo->ate_mutex = malloc(sizeof(t_mutex));
 	pthread_mutex_init(philo->ate_mutex, NULL);
+	philo->time_start = timestamp;
 	return (philo);
 }
 
