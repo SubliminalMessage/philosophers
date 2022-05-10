@@ -6,7 +6,7 @@
 /*   By: dangonza <dangonza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 18:27:12 by dangonza          #+#    #+#             */
-/*   Updated: 2022/05/10 13:57:51 by dangonza         ###   ########.fr       */
+/*   Updated: 2022/05/10 14:19:08 by dangonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ void	wait_philos(t_config **config)
 	int	i;
 
 	i = -1;
-	
 	while (++i < (*config)->n_philo)
 		pthread_join((*config)->threads[i], NULL);
 }

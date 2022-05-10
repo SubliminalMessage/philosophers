@@ -6,7 +6,7 @@
 /*   By: dangonza <dangonza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 13:12:44 by dangonza          #+#    #+#             */
-/*   Updated: 2022/05/10 13:24:34 by dangonza         ###   ########.fr       */
+/*   Updated: 2022/05/10 14:20:00 by dangonza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void	check_threads(t_config **config)
 
 	any_dead = 0;
 	count = 0;
-	while (!any_dead && ((*config)->total_loops == -1 || count < (*config)->n_philo))
+	while (!any_dead && ((*config)->total_loops == -1
+			|| count < (*config)->n_philo))
 	{
 		i = -1;
 		count = 0;
